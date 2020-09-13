@@ -1,1 +1,1 @@
-# StockApp
+# Stockify
