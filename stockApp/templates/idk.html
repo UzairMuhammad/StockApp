@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Stock Data</title>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<canvas id = 'myChart' width = 100 height = 100></canvas>
+
+
+<script type="text/javascript">
+const xlabels = [];
+const ytemps = [];
+const ztemps = [];
+
+chartIt();
+
+
+async function chartIt(){
+
+await getData();
+
+const ctx = document.getElementById('myChart').getContext('2d');
+
+
+
+const myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: xlabels,
+        datasets: [{
+			fill: false,
+            label: 'Stock Opening Price By Date',
+            data:  ytemps,
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)'
+            ],
+            borderWidth: 1
+        },
+
+		{
+			fill: false,
+            label: 'Stock Closing Price By Date',
+            data: ztemps,
+            backgroundColor: [
+                'rgba(41, 241, 195, 0.2)'
+            ],
+            borderColor: [
+                'rgba(41, 241, 195, 1)'
+            ],
+            borderWidth: 1
+        },
+
+
+
+
+
+		]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+}
+
+
+    async function getData(){
+
+
+    const response = await fetch('historical.csv');
+    const data = await response.text();
+    console.log(data);
+
+	const table = data.split('\n').slice(1);
+
+	table.forEach(elt => {
+
+		if (elt!="")
+		{
+
+		const cols = elt.split(',');
+
+		const date = cols[0];
+		xlabels.unshift(date);
+		const open = cols[1];
+		ytemps.unshift(open);
+		const close = cols[2];
+		ztemps.unshift(close);
+
+		console.log(open,close);
+		}
+	});
+	
+	
+	
+	
+                }
+</script> 
+
+  
+</head>
+<body>
+    <div id="chartContainer" style="width:100%; height:300px;"></div>
+</body>
+</html>
